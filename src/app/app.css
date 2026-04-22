@@ -1,100 +1,122 @@
-thead {
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 10;
+/* 1. Reset và cài đặt chung cho toàn bộ trang */
+h2{
+    text-align: center;
+    font-size: 20px;
+}
+p{
+  text-align: center;
 }
 .container {
-  padding: 30px;
+  width: 100%; /* Lấp đầy chiều ngang */
+  max-width: 100%; /* Đảm bảo không bị giới hạn */
+  padding: 10px; /* Giảm padding trên mobile */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f7f6;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.title {
-  color: #2c3e50;
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 600;
-}
-
+/* 2. Cấu trúc bảng linh hoạt */
 .product-table {
-  width: 100%;
+  width: 100%; /* Bảng luôn chiếm hết chiều rộng của container */
+  max-width: 1400px; /* Giới hạn độ rộng tối đa trên laptop cực lớn */
+  margin: 0 auto; /* Căn giữa khung bảng */
   border-collapse: collapse;
   background: white;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: table; 
+}
+
+/* Sticky Header - Giữ tiêu đề khi cuộn */
+thead {
+  position: sticky;
+  top: 0;
+  background-color: #34495e; /* Màu nền cho header */
+  z-index: 10;
 }
 
 .product-table th {
   background-color: #34495e;
   color: white;
-  padding: 15px;
+  padding: 15px 10px;
   text-transform: uppercase;
-  font-size: 14px;
-}
-
-.product-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #eee;
-}
-
-.product-name {
-  font-weight: 500;
-  color: #333;
-}
-
-.cell-center {
+  font-size: 13px;
   text-align: center;
 }
 
-/* Định dạng chung cho ô nhập */
+.product-table td {
+  padding: 12px 5px;
+  border-bottom: 1px solid #eee;
+  /* text-align: center; */
+  vertical-align: middle;
+}
+
+/* 3. Ô nhập liệu tự thích ứng */
 .input-field {
-  width: 80px;
-  padding: 8px;
+  width: 90%; /* Để ô nhập tự co giãn theo độ rộng cột */
+  max-width: 80px; /* Nhưng không quá to trên laptop */
+  padding: 8px 4px;
   border: 1px solid #ddd;
   border-radius: 4px;
   text-align: center;
   outline: none;
-  transition: all 0.3s;
 }
 
-/* Màu nền riêng cho từng cột nhập */
-.input-nhap {
-  background-color: #e3f2fd; /* Xanh nhạt */
-  border-color: #bbdefb;
-}
+.input-nhap { background-color: #e3f2fd; border-color: #bbdefb; }
+.input-kiem { background-color: #fffde7; border-color: #fff9c4; }
 
-.input-kiem {
-  background-color: #fffde7; /* Vàng nhạt */
-  border-color: #fff9c4;
-}
-
-.input-field:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-}
-
-/* Nút Lưu */
+/* 4. Nút Lưu */
 .btn-save {
   background-color: #27ae60;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 15px; /* Tăng diện tích bấm cho điện thoại */
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
-  transition: background 0.3s;
 }
 
-.btn-save:hover {
-  background-color: #2ecc71;
-}
+/* 5. CẤU HÌNH RIÊNG CHO ĐIỆN THOẠI (Responsive) */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 5px;
+  }
 
-.loading-text {
-  text-align: center;
-  margin-top: 30px;
-  color: #7f8c8d;
-  font-style: italic;
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  /* Thu nhỏ bảng để vừa màn hình dọc */
+  .product-table th {
+    font-size: 11px; /* Chữ nhỏ lại để không bị nhảy dòng */
+    padding: 10px 4px;
+  }
+
+  .product-table td {
+    padding: 8px 2px;
+    font-size: 12px;
+  }
+
+  .input-field {
+    width: 45px; /* Thu hẹp ô nhập để đủ chỗ cho 5 cột */
+    padding: 6px 2px;
+    font-size: 12px;
+  }
+
+  .btn-save {
+    padding: 6px 8px;
+    font-size: 11px;
+    width: 100%; /* Nút lưu chiếm hết ô để dễ bấm */
+  }
+
+  /* Ẩn bớt từ ngữ dài nếu cần */
+  .product-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
