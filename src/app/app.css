@@ -1,0 +1,100 @@
+thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+}
+.container {
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+.title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.product-table th {
+  background-color: #34495e;
+  color: white;
+  padding: 15px;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.product-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.cell-center {
+  text-align: center;
+}
+
+/* Định dạng chung cho ô nhập */
+.input-field {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s;
+}
+
+/* Màu nền riêng cho từng cột nhập */
+.input-nhap {
+  background-color: #e3f2fd; /* Xanh nhạt */
+  border-color: #bbdefb;
+}
+
+.input-kiem {
+  background-color: #fffde7; /* Vàng nhạt */
+  border-color: #fff9c4;
+}
+
+.input-field:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+/* Nút Lưu */
+.btn-save {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.btn-save:hover {
+  background-color: #2ecc71;
+}
+
+.loading-text {
+  text-align: center;
+  margin-top: 30px;
+  color: #7f8c8d;
+  font-style: italic;
+}
