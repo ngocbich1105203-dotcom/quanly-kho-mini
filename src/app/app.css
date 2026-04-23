@@ -1,39 +1,79 @@
-/* 1. Reset và cài đặt chung cho toàn bộ trang */
-h2{
-    text-align: center;
-    font-size: 20px;
-}
-p{
-  text-align: center;
-}
+/* 1. Reset và Cấu hình chung cho toàn bộ trang */
 .container {
-  width: 100%; /* Lấp đầy chiều ngang */
-  max-width: 100%; /* Đảm bảo không bị giới hạn */
-  padding: 10px; /* Giảm padding trên mobile */
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f7f6;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
-/* 2. Cấu trúc bảng linh hoạt */
-.product-table {
-  width: 100%; /* Bảng luôn chiếm hết chiều rộng của container */
-  max-width: 1400px; /* Giới hạn độ rộng tối đa trên laptop cực lớn */
-  margin: 0 auto; /* Căn giữa khung bảng */
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  display: table; 
+/* Căn giữa tiêu đề chính */
+.title-main {
+  color: #2c3e50;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 28px;
+  font-weight: 700;
+  width: 100%;
 }
 
-/* Sticky Header - Giữ tiêu đề khi cuộn */
+/* 2. Bố cục thanh hành động (Nút PDF) */
+.action-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Nút PDF chuyên nghiệp */
+.btn-pdf-fancy {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-pdf-fancy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(230, 126, 34, 0.6);
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+/* 3. Cấu trúc Bảng sản phẩm */
+.table-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto; /* Cho phép cuộn ngang trên mobile */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  display: table;
+}
+
+/* Sticky Header */
 thead {
   position: sticky;
   top: 0;
-  background-color: #34495e; /* Màu nền cho header */
+  background-color: #34495e;
   z-index: 10;
 }
 
@@ -49,70 +89,84 @@ thead {
 .product-table td {
   padding: 12px 5px;
   border-bottom: 1px solid #eee;
-  /* text-align: center; */
+  text-align: center;
   vertical-align: middle;
 }
 
-/* 3. Ô nhập liệu tự thích ứng */
-.input-field {
-  width: 90%; /* Để ô nhập tự co giãn theo độ rộng cột */
-  max-width: 80px; /* Nhưng không quá to trên laptop */
-  padding: 8px 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-align: center;
-  outline: none;
+.product-name {
+  font-weight: 500;
+  color: #333;
 }
 
-.input-nhap { background-color: #e3f2fd; border-color: #bbdefb; }
-.input-kiem { background-color: #fffde7; border-color: #fff9c4; }
+/* 4. Ô nhập liệu và Nút thao tác */
+.input-field {
+  width: 90%;
+  max-width: 80px;
+  padding: 8px 4px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s;
+}
 
-/* 4. Nút Lưu */
+.input-nhap { background-color: #f0f7ff; border-color: #bbdefb; }
+.input-kiem { background-color: #fffdf0; border-color: #fff9c4; }
+
+.input-field:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
 .btn-save {
   background-color: #27ae60;
   color: white;
   border: none;
-  padding: 10px 15px; /* Tăng diện tích bấm cho điện thoại */
+  padding: 10px 16px;
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
+  transition: background 0.3s;
 }
 
-/* 5. CẤU HÌNH RIÊNG CHO ĐIỆN THOẠI (Responsive) */
+.btn-save:hover { background-color: #2ecc71; }
+
+.loading-text {
+  text-align: center;
+  margin-top: 30px;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+/* 5. CẤU HÌNH RESPONSIVE CHO ĐIỆN THOẠI (< 768px) */
 @media screen and (max-width: 768px) {
-  .container {
-    padding: 5px;
+  .container { padding: 10px; }
+  
+  .title-main { font-size: 22px; }
+
+  .btn-pdf-fancy {
+    width: 100%;
+    justify-content: center;
   }
 
-  .title {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
-
-  /* Thu nhỏ bảng để vừa màn hình dọc */
   .product-table th {
-    font-size: 11px; /* Chữ nhỏ lại để không bị nhảy dòng */
+    font-size: 11px;
     padding: 10px 4px;
   }
 
-  .product-table td {
-    padding: 8px 2px;
-    font-size: 12px;
-  }
+  .product-table td { font-size: 12px; }
 
   .input-field {
-    width: 45px; /* Thu hẹp ô nhập để đủ chỗ cho 5 cột */
-    padding: 6px 2px;
+    width: 50px;
     font-size: 12px;
   }
 
   .btn-save {
-    padding: 6px 8px;
+    padding: 8px 10px;
     font-size: 11px;
-    width: 100%; /* Nút lưu chiếm hết ô để dễ bấm */
+    width: 100%;
   }
 
-  /* Ẩn bớt từ ngữ dài nếu cần */
   .product-name {
     max-width: 100px;
     overflow: hidden;

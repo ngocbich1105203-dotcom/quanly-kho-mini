@@ -1,34 +1,42 @@
 <div class="container">
-  <h2 class="title">📦 Quản Lý Kho Mini</h2>
+  <h2 class="title-main">📦 Quản Lý Kho Mini</h2>
   
-  <table class="product-table">
-    <thead>
-      <tr>
-        <th>Tên Sản Phẩm</th>
-        <th>Tồn Đầu</th>
-        <th class="col-nhap">Nhập Hàng</th>
-        <th class="col-kiem">Kiểm Hàng</th>
-        <th>Thao tác</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let sp of dsSanPham">
-        <td class="product-name">{{ sp.name }}</td>
-        <td class="cell-center">{{ sp.tonDau }}</td>
-        <td class="cell-center">
-          <input type="number" [(ngModel)]="sp.nhapHang" class="input-field input-nhap">
-        </td>
-        <td class="cell-center">
-          <input type="number" [(ngModel)]="sp.kiemHang" class="input-field input-kiem">
-        </td>
-        <td class="cell-center">
-          <button (click)='luuDuLieu(sp)' class="btn-save">Lưu</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="action-bar">
+    <button (click)="exportToPDF()" class="btn-pdf-fancy">
+      <span class="icon">📊</span> Xuất Báo Cáo PDF
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Tên Sản Phẩm</th>
+          <th>Tồn Đầu</th>
+          <th>Nhập Hàng</th>
+          <th>Kiểm Hàng</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sp of dsSanPham">
+          <td class="product-name">{{ sp.name }}</td>
+          <td class="cell-center">{{ sp.tonDau }}</td>
+          <td>
+            <input type="number" [(ngModel)]="sp.nhapHang" class="input-field input-nhap">
+          </td>
+          <td>
+            <input type="number" [(ngModel)]="sp.kiemHang" class="input-field input-kiem">
+          </td>
+          <td class="cell-center">
+            <button (click)='luuDuLieu(sp)' class="btn-save">Lưu</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <p *ngIf="dsSanPham.length === 0" class="loading-text">
-    ⏳ Đang tải dữ liệu từ Google Sheets...
+    ⏳ Đang tải dữ liệu từ API...
   </p>
 </div>
