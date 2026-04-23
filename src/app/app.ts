@@ -16,7 +16,11 @@ export class AppComponent implements OnInit {
   dsSanPham: any[] = [];
   isLoading: boolean = false;
   currentTab: string = 'nhap';
-  private readonly ADMIN_PASSWORD = '9999'; // Mật khẩu của bạn
+  
+  // --- THÔNG TIN THÊM MỚI ---
+  tenCongTy: string = 'DONG QUAN PHU'; // Bích có thể đổi tên công ty ở đây
+  ngayHienTai: string = new Date().toLocaleDateString('vi-VN');
+  private readonly ADMIN_PASSWORD = '35doclap'; 
 
   constructor(private khoService: KhoService, private cdr: ChangeDetectorRef) {}
 
@@ -24,14 +28,13 @@ export class AppComponent implements OnInit {
     this.tailaiDuLieu();
   }
 
-  // Hàm mở tab quản lý - Click vào icon để gọi
   moTabQuanLy() {
     const pass = prompt("Xác thực quyền quản lý:");
     if (pass === this.ADMIN_PASSWORD) {
       this.currentTab = 'admin';
       this.cdr.detectChanges();
     } else if (pass !== null) {
-      alert("Sai mã!");
+      alert("Mật khẩu không đúng!");
     }
   }
 
@@ -39,11 +42,8 @@ export class AppComponent implements OnInit {
     this.isLoading = true;
     this.khoService.getProducts().subscribe((data: any) => {
       this.dsSanPham = data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        gia: Number(item.gia) || 0,
-        tonDau: Number(item.tonDau) || 0,
-        nhapHang: Number(item.nhapHang) || 0,
+        id: item.id, name: item.name, gia: Number(item.gia) || 0,
+        tonDau: Number(item.tonDau) || 0, nhapHang: Number(item.nhapHang) || 0,
         kiemHang: Number(item.kiemHang) || 0
       }));
       this.isLoading = false;
@@ -51,31 +51,43 @@ export class AppComponent implements OnInit {
     }, () => this.isLoading = false);
   }
 
-  luuDuLieu(sp: any) {
-    this.khoService.updateProduct(sp).subscribe(() => {
-      alert('Đã cập nhật: ' + sp.name);
-      this.tailaiDuLieu();
+  luuTatCa() {
+    this.isLoading = true;
+    this.khoService.updateProduct(this.dsSanPham).subscribe({
+      next: () => {
+        alert('Đã lưu dữ liệu thành công! 🎉');
+        this.tailaiDuLieu();
+      },
+      error: () => { this.isLoading = false; alert('Lỗi khi lưu!'); }
     });
-  }
-
-  tinhTongTien() {
-    return this.dsSanPham.reduce((sum, sp) => {
-      return sum + ((sp.kiemHang || 0) * (sp.gia || 0));
-    }, 0);
   }
 
   exportToPDF() {
     const doc = new jsPDF();
-    doc.text('BAO CAO KIEM KHO', 105, 20, { align: 'center' });
+    
+    // Thêm Tên Công Ty và Ngày Tháng vào PDF
+    doc.setFontSize(10);
+    doc.text(this.removeVietnameseTones(this.tenCongTy), 14, 10);
+    doc.text(`Ngay: ${this.ngayHienTai}`, 160, 10);
+
+    doc.setFontSize(18);
+    doc.text('BAO CAO KIEM KHO', 105, 25, { align: 'center' });
+    
     const dataForTable = this.dsSanPham.map(sp => [
       this.removeVietnameseTones(sp.name), sp.gia, sp.tonDau, sp.nhapHang, sp.kiemHang
     ]);
+
     autoTable(doc, {
       head: [['Ten SP', 'Gia', 'Ton Dau', 'Nhap', 'Kiem']],
       body: dataForTable,
-      startY: 30
+      startY: 35,
+      theme: 'striped'
     });
-    doc.save(`Kho_Bich.pdf`);
+    doc.save(`Kho_${this.ngayHienTai.replace(/\//g, '-')}.pdf`);
+  }
+
+  tinhTongTien() {
+    return this.dsSanPham.reduce((sum, sp) => sum + ((sp.kiemHang || 0) * (sp.gia || 0)), 0);
   }
 
   removeVietnameseTones(str: string): string {

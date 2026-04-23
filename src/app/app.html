@@ -1,20 +1,21 @@
 <div class="container">
+  <div class="header-info" style="display: flex; justify-content: space-between; padding: 10px 0; color: #555; font-size: 0.9rem;">
+    <span>🏢 <b>{{ tenCongTy }}</b></span>
+    <span>📅 Ngày: <b>{{ ngayHienTai }}</b></span>
+  </div>
+
   <h2 class="title-main">
-    <span (click)="moTabQuanLy()" 
-          style="cursor: pointer; padding: 5px; user-select: none;" 
-          title="Click vào đây để nhập Pass">
-      📦
-    </span> 
-    {{ currentTab === 'nhap' ? 'Quản Lý Kho Mini' : 'Báo Cáo Doanh Thu' }}
+    <span (click)="moTabQuanLy()" style="cursor: pointer;">📦</span> Quản Lý Kho Mini
   </h2>
   
   <div class="action-bar" *ngIf="currentTab === 'nhap'">
     <button (click)="exportToPDF()" class="btn-pdf-fancy">📊 Xuất Báo Cáo PDF</button>
+    <button (click)="luuTatCa()" class="btn-save-all" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 10px;">
+      💾 LƯU TẤT CẢ
+    </button>
   </div>
 
-  <div *ngIf="isLoading" style="text-align: center; padding: 15px; color: #7f8c8d; font-style: italic;">
-    ⏳ Đang tải dữ liệu từ API...
-  </div>
+  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">⏳ Đang xử lý...</div>
 
   <div class="table-container" *ngIf="!isLoading && currentTab === 'nhap'">
     <table class="product-table">
@@ -25,7 +26,6 @@
           <th>Tồn Đầu</th>
           <th>Nhập</th>
           <th>Kiểm</th>
-          <th>Thao Tác</th>
         </tr>
       </thead>
       <tbody>
@@ -35,22 +35,17 @@
           <td class="cell-center">{{ sp.tonDau }}</td>
           <td><input type="number" [(ngModel)]="sp.nhapHang" class="input-field"></td>
           <td><input type="number" [(ngModel)]="sp.kiemHang" class="input-field"></td>
-          <td class="cell-center">
-            <button (click)="luuDuLieu(sp)" class="btn-save">Lưu</button>
-          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="admin-panel" *ngIf="currentTab === 'admin'" style="background: #fdfdfd; padding: 25px; border-radius: 12px; border: 1px solid #eee; margin-top: 15px;">
-    <h3 style="color: #2c3e50; margin-top: 0;">💰 Báo Cáo Tài Chính</h3>
-    <div class="card-summary" style="background: #e8f5e9; padding: 20px; border-left: 6px solid #27ae60; border-radius: 4px;">
-      <p style="margin: 0; font-size: 1.1rem;">Tổng giá trị hàng thực tế trong kho:</p>
-      <h1 style="color: #27ae60; margin: 10px 0;">{{ tinhTongTien() | number }} VNĐ</h1>
+  <div class="admin-panel" *ngIf="currentTab === 'admin'" style="background: #f9f9f9; padding: 25px; border-radius: 8px; margin-top: 10px;">
+    <h3>💰 Tổng kết doanh thu ({{ ngayHienTai }})</h3>
+    <div class="card-summary" style="background: white; padding: 20px; border-left: 5px solid #27ae60;">
+      <p>Tổng giá trị tồn thực tế:</p>
+      <h2 style="color: #27ae60;">{{ tinhTongTien() | number }} VNĐ</h2>
     </div>
-    <div style="margin-top: 20px;">
-      <button (click)="currentTab = 'nhap'" class="btn-save">⬅️ Thoát Quản Lý</button>
-    </div>
+    <button (click)="currentTab = 'nhap'" style="margin-top: 20px; cursor: pointer;">⬅️ Quay lại</button>
   </div>
 </div>
