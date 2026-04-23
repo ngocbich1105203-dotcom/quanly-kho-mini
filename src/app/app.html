@@ -1,42 +1,56 @@
 <div class="container">
-  <h2 class="title-main">📦 Quản Lý Kho Mini</h2>
+  <h2 class="title-main">
+    <span (click)="moTabQuanLy()" 
+          style="cursor: pointer; padding: 5px; user-select: none;" 
+          title="Click vào đây để nhập Pass">
+      📦
+    </span> 
+    {{ currentTab === 'nhap' ? 'Quản Lý Kho Mini' : 'Báo Cáo Doanh Thu' }}
+  </h2>
   
-  <div class="action-bar">
-    <button (click)="exportToPDF()" class="btn-pdf-fancy">
-      <span class="icon">📊</span> Xuất Báo Cáo PDF
-    </button>
+  <div class="action-bar" *ngIf="currentTab === 'nhap'">
+    <button (click)="exportToPDF()" class="btn-pdf-fancy">📊 Xuất Báo Cáo PDF</button>
   </div>
 
-  <div class="table-container">
+  <div *ngIf="isLoading" style="text-align: center; padding: 15px; color: #7f8c8d; font-style: italic;">
+    ⏳ Đang tải dữ liệu từ API...
+  </div>
+
+  <div class="table-container" *ngIf="!isLoading && currentTab === 'nhap'">
     <table class="product-table">
       <thead>
         <tr>
           <th>Tên Sản Phẩm</th>
+          <th>Giá</th>
           <th>Tồn Đầu</th>
-          <th>Nhập Hàng</th>
-          <th>Kiểm Hàng</th>
-          <th>Thao tác</th>
+          <th>Nhập</th>
+          <th>Kiểm</th>
+          <th>Thao Tác</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let sp of dsSanPham">
           <td class="product-name">{{ sp.name }}</td>
+          <td class="cell-center">{{ sp.gia | number }} đ</td>
           <td class="cell-center">{{ sp.tonDau }}</td>
-          <td>
-            <input type="number" [(ngModel)]="sp.nhapHang" class="input-field input-nhap">
-          </td>
-          <td>
-            <input type="number" [(ngModel)]="sp.kiemHang" class="input-field input-kiem">
-          </td>
+          <td><input type="number" [(ngModel)]="sp.nhapHang" class="input-field"></td>
+          <td><input type="number" [(ngModel)]="sp.kiemHang" class="input-field"></td>
           <td class="cell-center">
-            <button (click)='luuDuLieu(sp)' class="btn-save">Lưu</button>
+            <button (click)="luuDuLieu(sp)" class="btn-save">Lưu</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <p *ngIf="dsSanPham.length === 0" class="loading-text">
-    ⏳ Đang tải dữ liệu từ API...
-  </p>
+  <div class="admin-panel" *ngIf="currentTab === 'admin'" style="background: #fdfdfd; padding: 25px; border-radius: 12px; border: 1px solid #eee; margin-top: 15px;">
+    <h3 style="color: #2c3e50; margin-top: 0;">💰 Báo Cáo Tài Chính</h3>
+    <div class="card-summary" style="background: #e8f5e9; padding: 20px; border-left: 6px solid #27ae60; border-radius: 4px;">
+      <p style="margin: 0; font-size: 1.1rem;">Tổng giá trị hàng thực tế trong kho:</p>
+      <h1 style="color: #27ae60; margin: 10px 0;">{{ tinhTongTien() | number }} VNĐ</h1>
+    </div>
+    <div style="margin-top: 20px;">
+      <button (click)="currentTab = 'nhap'" class="btn-save">⬅️ Thoát Quản Lý</button>
+    </div>
+  </div>
 </div>
