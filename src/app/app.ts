@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
       startY: 35,
       theme: 'striped'
     });
-    doc.save(`Kho_${this.ngayHienTai.replace(/\//g, '-')}.pdf`);
+    doc.save(`Bao-cao-kho-${this.ngayHienTai.replace(/\//g, '-')}.pdf`);
   }
 
   tinhTongTien() {
