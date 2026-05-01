@@ -1,51 +1,96 @@
 <div class="container">
-  <div class="header-info" style="display: flex; justify-content: space-between; padding: 10px 0; color: #555; font-size: 0.9rem;">
+  <!-- Thông tin tiêu đề trang và Chọn ngày -->
+  <div class="header-info">
     <span>🏢 <b>{{ tenCongTy }}</b></span>
-    <span>📅 Ngày: <b>{{ ngayHienTai }}</b></span>
+    <!-- Thay đổi từ text sang date để chọn lịch -->
+    <span class="date-section">
+      📅 Ngày: 
+      <input 
+        type="date" 
+        [(ngModel)]="selectedDate" 
+        (change)="onDateChange()" 
+        class="date-picker">
+    </span>
   </div>
 
   <h2 class="title-main">
     <span (click)="moTabQuanLy()" style="cursor: pointer;">📦</span> Quản Lý Kho Mini
   </h2>
   
+  <!-- Thanh hành động -->
   <div class="action-bar" *ngIf="currentTab === 'nhap'">
-    <button (click)="exportToPDF()" class="btn-pdf-fancy">📊 Xuất Báo Cáo PDF</button>
-    <button (click)="luuTatCa()" class="btn-save-all" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 10px;">
-      💾 LƯU TẤT CẢ
+    <!-- Nút Xuất PDF luôn hiển thị đầy đủ chữ và icon -->
+    <button (click)="exportToPDF()" class="btn-pdf-fancy">
+      <span class="btn-icon">📊</span>
+      <span class="btn-text">Xuất Báo Cáo PDF</span>
+  </button>
+    
+    <button (click)="luuTatCa()" class="btn-save-all" *ngIf="!isHistoryMode">
+      <span class="btn-icon">💾</span>
+      <span class="btn-text">LƯU TẤT CẢ</span>
     </button>
+
+    <div *ngIf="isHistoryMode" class="history-badge">
+      ⚠️ Đang xem lại lịch sử (Chế độ chỉ đọc)
+    </div>
   </div>
 
-  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">⏳ Đang xử lý...</div>
+  <!-- Trạng thái đang tải -->
+  <div *ngIf="isLoading" class="loading-status">⏳ Đang xử lý dữ liệu...</div>
 
+  <!-- GIAO DIỆN NHẬP LIỆU -->
   <div class="table-container" *ngIf="!isLoading && currentTab === 'nhap'">
     <table class="product-table">
       <thead>
         <tr>
-          <th>Tên Sản Phẩm</th>
-          <th>Giá</th>
-          <th>Tồn Đầu</th>
+          <th>Sản Phẩm</th>
+          <th>Giá/Tồn</th>
           <th>Nhập</th>
           <th>Kiểm</th>
+          <th style="color: #e74c3c;">Đã Bán</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let sp of dsSanPham">
-          <td class="product-name">{{ sp.name }}</td>
-          <td class="cell-center">{{ sp.gia | number }} đ</td>
-          <td class="cell-center">{{ sp.tonDau }}</td>
-          <td><input type="number" [(ngModel)]="sp.nhapHang" class="input-field"></td>
-          <td><input type="number" [(ngModel)]="sp.kiemHang" class="input-field"></td>
+        <tr *ngFor="let sp of dsSanPham" class="responsive-row">
+          <!-- Tên sản phẩm -->
+          <td class="product-name" data-label="Tên SP">{{ sp.name }}</td>
+          
+          <!-- Thông tin Giá và Tồn đầu -->
+          <td class="cell-center" data-label="Giá/Tồn">
+            <small>{{ sp.gia | number }}đ</small><br>
+            <strong>Tồn: {{ sp.tonDau }}</strong>
+          </td>
+          
+          <!-- Nhập hàng (Bị khóa nếu xem lịch sử) -->
+          <td data-label="Nhập">
+            <input type="number" [(ngModel)]="sp.nhapHang" class="input-field" [disabled]="isHistoryMode">
+          </td>
+          
+          <!-- Kiểm hàng (Bị khóa nếu xem lịch sử) -->
+          <td data-label="Kiểm">
+            <input type="number" [(ngModel)]="sp.kiemHang" class="input-field" [disabled]="isHistoryMode">
+          </td>
+
+          <!-- Đã bán -->
+          <td data-label="Đã Bán" style="font-weight: bold; color: #e74c3c;">
+            {{ tinhSoLuongDaBan(sp) }}
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="admin-panel" *ngIf="currentTab === 'admin'" style="background: #f9f9f9; padding: 25px; border-radius: 8px; margin-top: 10px;">
-    <h3>💰 Tổng kết doanh thu ({{ ngayHienTai }})</h3>
-    <div class="card-summary" style="background: white; padding: 20px; border-left: 5px solid #27ae60;">
-      <p>Tổng giá trị tồn thực tế:</p>
-      <h2 style="color: #27ae60;">{{ tinhTongTien() | number }} VNĐ</h2>
+  <!-- TAB QUẢN LÝ DOANH THU -->
+  <div class="admin-panel" *ngIf="currentTab === 'admin'">
+    <h3>💰 Tổng kết doanh thu</h3>
+    
+    <div class="card-summary">
+      <p>Tổng tiền bán được (Đã bán x Giá):</p>
+      <h2 style="color: #27ae60;">{{ tinhTongDoanhThu() | number }} VNĐ</h2>
     </div>
-    <button (click)="currentTab = 'nhap'" style="margin-top: 20px; cursor: pointer;">⬅️ Quay lại</button>
+
+    <div style="margin-top: 20px; text-align: center;">
+      <button (click)="currentTab = 'nhap'" class="btn-save" style="width: 200px;">⬅️ Quay lại</button>
+    </div>
   </div>
 </div>

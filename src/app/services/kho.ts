@@ -6,13 +6,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class KhoService {
-  // Thay cái link dưới đây bằng link Web App URL của bạn
+  // Link Web App URL của bạn
   private API_URL = 'https://script.google.com/macros/s/AKfycbyzDVXPhBJoso10WODeTYDbBFH6CUocIzh9mFA6G2r1HyGx1ZFVrCwZNhCiKK8JLty_/exec'; 
 
   constructor(private http: HttpClient) { }
 
-  getProducts(): Observable<any> {
-    return this.http.get(this.API_URL);
+  /**
+   * Lấy danh sách sản phẩm
+   * @param date (Tùy chọn) Truyền vào ngày YYYY-MM-DD để lấy dữ liệu lịch sử
+   */
+  getProducts(date?: string): Observable<any> {
+    // Nếu có truyền date, chúng ta thêm tham số vào URL để Google Script xử lý
+    const url = date ? `${this.API_URL}?date=${date}` : this.API_URL;
+    return this.http.get(url);
   }
 
   updateProduct(data: any): Observable<any> {

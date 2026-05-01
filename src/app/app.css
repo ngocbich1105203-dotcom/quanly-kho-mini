@@ -1,218 +1,306 @@
-/* 1. Reset và Cấu hình chung cho toàn bộ trang */
-.container {
-  width: 100%;
-  max-width: 100%;
+/* Import font chữ cao cấp */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #2563eb;
+  --primary-soft: rgba(37, 99, 235, 0.1);
+  --accent: #f59e0b;
+  --danger: #e11d48;
+  --success: #10b981;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --bg-main: #f1f5f9;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  margin: 0;
   padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7f6;
-  min-height: 100vh;
-  box-sizing: border-box;
+  line-height: 1.6;
 }
 
-/* Căn giữa tiêu đề chính */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* --- HEADER & DATE PICKER --- */
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 25px;
+  box-shadow: var(--shadow-sm);
+}
+
+.date-picker {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--bg-main);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.date-picker:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
 .title-main {
-  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
   text-align: center;
-  margin: 20px 0;
-  font-size: 28px;
-  font-weight: 700;
-  width: 100%;
+  margin-bottom: 30px;
+  letter-spacing: -0.025em;
 }
 
-/* 2. Bố cục thanh hành động (Nút PDF) */
+/* --- ACTION BUTTONS --- */
 .action-bar {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 35px;
 }
 
-/* Nút PDF chuyên nghiệp */
-.btn-pdf-fancy {
-  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 600;
+button {
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
-  transition: all 0.3s ease;
+  border: none;
 }
 
+/* Đảm bảo nút PDF luôn hiển thị chữ */
+.btn-pdf-fancy {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px; /* Độ rộng tối thiểu để không bị mất chữ */
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap; /* Ngăn chữ bị nhảy dòng */
+}
+
+/* Ép thẻ span chứa chữ luôn hiển thị */
+.btn-pdf-fancy .btn-text {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Hiệu ứng khi di chuột vào */
 .btn-pdf-fancy:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(230, 126, 34, 0.6);
-  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
-/* 3. Cấu trúc Bảng sản phẩm */
+/* Đảm bảo nút LƯU TẤT CẢ luôn hiển thị chữ */
+.btn-save-all {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 180px; /* Độ rộng tối thiểu tương đương nút PDF */
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #2563eb; /* Màu xanh Primary */
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap; /* Chống xuống hàng */
+  transition: all 0.2s ease;
+}
+
+/* Ép phần chữ luôn hiển thị */
+.btn-save-all .btn-text {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Hiệu ứng khi di chuột hoặc nhấn */
+.btn-save-all:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-save-all:active {
+  transform: translateY(0);
+}
+
+/* --- TABLE STYLING --- */
 .table-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  overflow-x: auto; /* Cho phép cuộn ngang trên mobile */
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-  -webkit-overflow-scrolling: touch;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
 }
 
 .product-table {
   width: 100%;
   border-collapse: collapse;
-  display: table;
-}
-
-/* Sticky Header */
-thead {
-  position: sticky;
-  top: 0;
-  background-color: #34495e;
-  z-index: 10;
 }
 
 .product-table th {
-  background-color: #34495e;
-  color: white;
-  padding: 15px 10px;
+  background-color: #1e293b;
+  color: #f8fafc;
+  font-weight: 600;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 18px;
   text-align: center;
 }
 
 .product-table td {
-  padding: 12px 5px;
-  border-bottom: 1px solid #eee;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
   text-align: center;
-  vertical-align: middle;
 }
 
 .product-name {
-  font-weight: 500;
-  color: #333;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left !important;
+  max-width: 250px;
 }
 
-/* 4. Ô nhập liệu và Nút thao tác */
+/* --- INPUT FIELDS --- */
 .input-field {
-  width: 90%;
-  max-width: 80px;
-  padding: 8px 4px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  width: 85px;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
   text-align: center;
-  outline: none;
-  transition: all 0.3s;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-dark);
+  transition: all 0.2s;
+  background: #f8fafc;
 }
-
-.input-nhap { background-color: #f0f7ff; border-color: #bbdefb; }
-.input-kiem { background-color: #fffdf0; border-color: #fff9c4; }
 
 .input-field:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
-.btn-save {
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background 0.3s;
-}
+/* --- RESPONSIVE (MOBILE) --- */
+@media (max-width: 768px) {
+  body { padding: 12px; }
 
-.btn-save:hover { background-color: #2ecc71; }
+  .header-info {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
 
-.loading-text {
-  text-align: center;
-  margin-top: 30px;
-  color: #7f8c8d;
-  font-style: italic;
-}
+  .action-bar {
+    flex-direction: column;
+    padding: 0 10px;
+  }
 
-/* 5. CẤU HÌNH RESPONSIVE CHO ĐIỆN THOẠI (< 768px) */
-@media screen and (max-width: 768px) {
-  .container { padding: 10px; }
-  
-  .title-main { font-size: 22px; }
-
-  .btn-pdf-fancy {
+  .action-bar button {
     width: 100%;
-    justify-content: center;
+    min-height: 50px;
   }
 
-  .product-table th {
-    font-size: 11px;
-    padding: 10px 4px;
+  /* Biến bảng thành dạng thẻ (Card) */
+  .product-table thead {
+    display: none; /* Ẩn tiêu đề bảng trên mobile */
   }
 
-  .product-table td { font-size: 12px; }
-
-  .input-field {
-    width: 50px;
-    font-size: 12px;
+  .product-table tr {
+    display: block;
+    background: white;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 10px;
+    box-shadow: var(--shadow-sm);
   }
 
-  .btn-save {
-    padding: 8px 10px;
-    font-size: 11px;
-    width: 100%;
+  .product-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .product-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Hiển thị nhãn chỉ dẫn */
+  .product-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: left;
   }
 
   .product-name {
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    background: #f1f5f9;
+    border-radius: 12px 12px 0 0;
+    margin: -10px -10px 10px -10px;
+    max-width: none;
+    font-size: 1.1rem;
+    color: var(--primary);
+  }
+
+  .product-name::before {
+    content: "SẢN PHẨM" !important;
+  }
+
+  .input-field {
+    width: 100px;
   }
 }
-.tabs-menu {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-bottom: 20px;
-}
 
-.tabs-menu button {
-  padding: 10px 20px;
-  border: none;
-  background: #ddd;
-  cursor: pointer;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-}
-
-.tabs-menu button.active {
-  background: #34495e;
-  color: white;
-}
-
-.summary-cards {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* Trạng thái History (Khi xem lại ngày cũ) */
+.history-badge {
+  background: #fee2e2;
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-align: center;
-  border-left: 5px solid #27ae60;
-}
-.loading-status {
-  text-align: center;
-  padding: 20px;
-  font-style: italic;
-  color: #7f8c8d;
-  font-size: 1.1rem;
+  border: 1px solid #fecaca;
 }
