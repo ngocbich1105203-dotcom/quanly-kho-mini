@@ -19,9 +19,8 @@ export class AppComponent implements OnInit {
   
   // --- QUẢN LÝ NGÀY THÁNG ---
   tenCongTy: string = 'DONG QUAN PHU'; 
-  // selectedDate dùng để binding với input type="date", định dạng YYYY-MM-DD
   selectedDate: string = new Date().toISOString().split('T')[0]; 
-  isHistoryMode: boolean = false; // Trạng thái xem dữ liệu cũ
+  isHistoryMode: boolean = false; 
 
   private readonly ADMIN_PASSWORD = '35doclap'; 
 
@@ -31,24 +30,17 @@ export class AppComponent implements OnInit {
     this.tailaiDuLieu();
   }
 
-  /**
-   * Xử lý khi thay đổi ngày trên lịch
-   */
   onDateChange() {
     const today = new Date().toISOString().split('T')[0];
-    
     if (this.selectedDate === today) {
       this.isHistoryMode = false;
-      this.tailaiDuLieu(); // Load dữ liệu hiện tại
+      this.tailaiDuLieu();
     } else {
       this.isHistoryMode = true;
-      this.taiLichSuTheoNgay(this.selectedDate); // Load lịch sử
+      this.taiLichSuTheoNgay(this.selectedDate);
     }
   }
 
-  /**
-   * Lấy dữ liệu hiện tại (Sheet Current)
-   */
   tailaiDuLieu() {
     this.isLoading = true;
     this.khoService.getProducts().subscribe((data: any) => {
@@ -56,14 +48,8 @@ export class AppComponent implements OnInit {
     }, () => this.isLoading = false);
   }
 
-  /**
-   * Lấy dữ liệu lịch sử theo ngày (Sheet History)
-   * Lưu ý: Bạn cần thêm hàm getHistoryByDate(date) vào KhoService
-   */
   taiLichSuTheoNgay(date: string) {
     this.isLoading = true;
-    // Giả sử service của bạn có hàm getHistory(date)
-    // Nếu chưa có, bạn có thể truyền thêm action vào getProducts
     this.khoService.getProducts(date).subscribe((data: any) => {
       this.processData(data);
     }, () => {
@@ -72,9 +58,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  /**
-   * Xử lý dữ liệu trả về từ API
-   */
   private processData(data: any) {
     this.dsSanPham = data.map((item: any) => ({
       id: item.id,
@@ -99,8 +82,7 @@ export class AppComponent implements OnInit {
   }
 
   luuTatCa() {
-    if (this.isHistoryMode) return; // Không cho lưu khi đang xem lịch sử
-
+    if (this.isHistoryMode) return;
     this.isLoading = true;
     this.khoService.updateProduct(this.dsSanPham).subscribe({
       next: () => {
@@ -128,15 +110,29 @@ export class AppComponent implements OnInit {
 
   exportToPDF() {
     const doc = new jsPDF();
+    const dateStr = this.selectedDate.split('-').reverse().join('/');
+    const pageWidth = doc.internal.pageSize.width;
     
+    // 1. TRANG TRÍ HEADER CAO CẤP
+    doc.setFillColor(41, 128, 185); // Màu xanh chủ đạo
+    doc.rect(0, 0, pageWidth, 20, 'F'); // Thanh màu ngang đầu trang
+    
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
-    doc.text(this.removeVietnameseTones(this.tenCongTy), 14, 10);
-    // Hiển thị ngày đã chọn trên PDF
-    doc.text(`Ngay: ${this.selectedDate.split('-').reverse().join('/')}`, 160, 10);
+    doc.text(this.removeVietnameseTones(this.tenCongTy), 14, 13);
+    doc.text(`Ngay xuat: ${dateStr}`, pageWidth - 14, 13, { align: 'right' });
 
-    doc.setFontSize(18);
-    doc.text('BAO CAO DOANH THU KHO', 105, 25, { align: 'center' });
+    // 2. TIÊU ĐỀ CHÍNH
+    doc.setFontSize(22);
+    doc.setTextColor(44, 62, 80); // Màu xám đen sang trọng
+    doc.text('BAO CAO DOANH THU KHO', pageWidth / 2, 40, { align: 'center' });
     
+    // Vẽ một đường kẻ mảnh dưới tiêu đề
+    doc.setDrawColor(41, 128, 185);
+    doc.setLineWidth(1);
+    doc.line(pageWidth / 2 - 30, 45, pageWidth / 2 + 30, 45);
+
+    // 3. CHUẨN BỊ DỮ LIỆU
     const dataForTable = this.dsSanPham.map(sp => {
       const daBan = this.tinhSoLuongDaBan(sp);
       const thanhTien = daBan * sp.gia;
@@ -151,23 +147,70 @@ export class AppComponent implements OnInit {
       ];
     });
 
+    // 4. XUẤT BẢNG STYLE "PREMIUM"
     autoTable(doc, {
-      head: [['Ten SP', 'Gia', 'Ton Dau', 'Nhap', 'Kiem', 'Da Ban', 'Thanh Tien']],
+      head: [['Ten San Pham', 'Gia (VND)', 'Ton Dau', 'Nhap', 'Kiem', 'Da Ban', 'Thanh Tien']],
       body: dataForTable,
-      startY: 35,
-      theme: 'striped',
-      styles: { fontSize: 8 }
+      startY: 55,
+      theme: 'grid', // Dùng grid để nhìn rõ ràng từng ô
+      headStyles: { 
+        fillColor: [44, 62, 80], 
+        textColor: 255, 
+        fontSize: 9, 
+        fontStyle: 'bold',
+        halign: 'center',
+        valign: 'middle',
+        minCellHeight: 10
+      },
+      bodyStyles: {
+        fontSize: 8,
+        textColor: 50,
+        cellPadding: 4
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' },
+        1: { halign: 'right' },
+        2: { halign: 'center' },
+        3: { halign: 'center' },
+        4: { halign: 'center' },
+        5: { halign: 'center' },
+        6: { halign: 'right', fontStyle: 'bold', textColor: [192, 57, 43] } // Thành tiền màu đỏ đậm
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245]
+      }
     });
 
-    const finalY = (doc as any).lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.text(`TONG DOANH THU: ${this.tinhTongDoanhThu().toLocaleString()} VND`, 14, finalY);
+    // 5. FOOTER TỔNG KẾT SANG TRỌNG
+    const finalY = (doc as any).lastAutoTable.finalY + 15;
+    
+    // Vẽ khung bo góc cho phần tổng tiền
+    doc.setFillColor(236, 240, 241);
+    doc.roundedRect(pageWidth - 90, finalY - 8, 76, 12, 2, 2, 'F');
+    
+    doc.setFontSize(11);
+    doc.setTextColor(44, 62, 80);
+    doc.text('TONG DOANH THU:', pageWidth - 85, finalY);
+    
+    doc.setFontSize(13);
+    doc.setTextColor(192, 57, 43); // Màu đỏ chuyên nghiệp cho con số cuối cùng
+    doc.text(`${this.tinhTongDoanhThu().toLocaleString()} VND`, pageWidth - 16, finalY, { align: 'right' });
 
-    doc.save(`Doanh-thu-${this.selectedDate}.pdf`);
+    // 6. CHỮ KÝ (Thêm vào cho giống báo cáo thật)
+    const signatureY = finalY + 25;
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text('Nguoi lap bieu', 35, signatureY);
+    doc.text('(Ky va ghi ro ho ten)', 30, signatureY + 5);
+
+    doc.save(`Bao-cao-chuyen-nghiep-${this.selectedDate}.pdf`);
   }
 
   removeVietnameseTones(str: string): string {
     if (!str) return '';
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    return str.normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/đ/g, 'd')
+              .replace(/Đ/g, 'D');
   }
 }
