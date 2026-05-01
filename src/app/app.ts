@@ -203,7 +203,7 @@ export class AppComponent implements OnInit {
     doc.text('Nguoi lap bieu', 35, signatureY);
     doc.text('(Ky va ghi ro ho ten)', 30, signatureY + 5);
 
-    doc.save(`Bao-cao-chuyen-nghiep-${this.selectedDate}.pdf`);
+    doc.save(`Bao-cao-doanh-thu-${this.selectedDate}.pdf`);
   }
 
   removeVietnameseTones(str: string): string {
