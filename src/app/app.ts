@@ -51,10 +51,17 @@ export class AppComponent implements OnInit {
   taiLichSuTheoNgay(date: string) {
     this.isLoading = true;
     this.khoService.getProducts(date).subscribe((data: any) => {
-      this.processData(data);
-    }, () => {
+      if (data && data.length > 0) {
+        this.processData(data); // Nếu có lịch sử thì hiện ra
+      } else {
+        // Nếu không có lịch sử cho ngày này, reset toàn bộ về 0 để tránh hiện sai
+        this.dsSanPham = this.dsSanPham.map(sp => ({
+          ...sp,
+          tonDau: 0, nhapHang: 0, kiemHang: 0
+        }));
+        alert("Ngày này không có dữ liệu lịch sử!");
+      }
       this.isLoading = false;
-      alert("Không tìm thấy dữ liệu cho ngày này!");
     });
   }
 
